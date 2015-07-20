@@ -34,7 +34,8 @@
     NSString *classPrefix = @"";
     BOOL target6 = NO;
     NSMutableArray *inputURLs = [NSMutableArray array];
-    
+	NSString *outputPath = nil;
+	
     while ((opt = getopt(argc, (char *const*)argv, "o:f:p:h6")) != -1) {
         switch (opt) {
             case 'h': {
@@ -51,15 +52,14 @@
             }
                 
             case 'o': {
-                NSString *outputPath = [[NSString alloc] initWithUTF8String:optarg];
-                outputPath = [outputPath stringByExpandingTildeInPath];
-                [[NSFileManager defaultManager] changeCurrentDirectoryPath:outputPath];
+                outputPath = [[NSString alloc] initWithUTF8String:optarg];
+                outputPath = [outputPath stringByStandardizingPath];
                 break;
             }
                 
             case 'f': {
                 NSString *searchPath = [[NSString alloc] initWithUTF8String:optarg];
-                searchPath = [searchPath stringByExpandingTildeInPath];
+                searchPath = [searchPath stringByStandardizingPath];
                 searchURL = [NSURL fileURLWithPath:searchPath];
                 break;
             }
@@ -81,7 +81,7 @@
     
     for (int index = optind; index < argc; index++) {
         NSString *inputPath = [[NSString alloc] initWithUTF8String:argv[index]];
-        inputPath = [inputPath stringByExpandingTildeInPath];
+        inputPath = [inputPath stringByStandardizingPath];
         [inputURLs addObject:[NSURL fileURLWithPath:inputPath]];
     }
     
@@ -93,7 +93,11 @@
             }
         }
     }
-    
+	
+	if (outputPath) {
+		[[NSFileManager defaultManager] changeCurrentDirectoryPath:outputPath];
+	}
+	
     dispatch_group_t group = dispatch_group_create();
     
     for (NSURL *url in inputURLs) {
