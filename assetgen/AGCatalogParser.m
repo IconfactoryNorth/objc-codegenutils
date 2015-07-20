@@ -111,7 +111,7 @@
     
     // If we're only targeting iOS 7, short circuit since the asset catalog will have been compiled for us.
     if (!self.targetiOS6) {
-        [implementation appendFormat:@"    return [UIImage imageNamed:@\"%@\"];\n", imageSetName];
+        [implementation appendFormat:@"    return [UIImage imageNamed: @\"%@\"];\n", imageSetName];
         [implementation appendString:@"}\n"];
     } else {
         
@@ -125,11 +125,11 @@
             }
         }
         if (shortCircuit) {
-            [implementation appendFormat:@"    return [UIImage imageNamed:@\"%@\"];\n", [variants lastObject][@"filename"]];
+            [implementation appendFormat:@"    return [UIImage imageNamed: @\"%@\"];\n", [variants lastObject][@"filename"]];
             [implementation appendString:@"}\n"];
 
         } else {
-            [implementation appendString:@"    UIImage *image = nil;\n\n"];
+            [implementation appendString:@"    UIImage* image = nil;\n\n"];
             
             for (NSDictionary *variant in variants) {
                 if (!variant[@"filename"]) {
@@ -159,7 +159,7 @@
                     CGFloat right = [resizing[@"capInsets"][@"right"] floatValue] / scale;
                     NSString *mode = [resizing[@"center"][@"mode"] isEqualToString:@"stretch"] ? @"UIImageResizingModeStretch" : @"UIImageResizingModeTile";
                     
-                    [implementation appendFormat:@"%@    image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(%.1ff, %.1ff, %.1ff, %.1ff) resizingMode:%@];\n", scaleIndentation, top, left, bottom, right, mode];
+                    [implementation appendFormat:@"%@    image = [image resizableImageWithCapInsets: UIEdgeInsetsMake(%.1ff, %.1ff, %.1ff, %.1ff) resizingMode: %@];\n", scaleIndentation, top, left, bottom, right, mode];
                 }
                 
                 [implementation appendFormat:@"%@}\n", scaleIndentation];
