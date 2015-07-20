@@ -101,12 +101,12 @@
         return -[obj1[@"scale"] compare:obj2[@"scale"]];
     }];
 
-    NSString *interface = [NSString stringWithFormat:@"+ (UIImage *)%@Image;\n", methodName];
+	NSString *interface = [NSString stringWithFormat:@"+ (UIImage*) %@;\n", methodName];
+	NSMutableString *implementation = [NSMutableString stringWithFormat:@"+ (UIImage*) %@\n", methodName];
     @synchronized(self.interfaceContents) {
         [self.interfaceContents addObject:interface];
     }
     
-    NSMutableString *implementation = [interface mutableCopy];
     [implementation appendString:@"{\n"];
     
     // If we're only targeting iOS 7, short circuit since the asset catalog will have been compiled for us.
