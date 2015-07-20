@@ -33,19 +33,22 @@
     
     for (NSString *key in colorList.allKeys) {
         NSColor *color = [colorList colorWithKey:key];
-        if (![color.colorSpaceName isEqualToString:NSDeviceRGBColorSpace]) {
-            printf("Color %s isn't device RGB. Skipping.\n", [key UTF8String]);
-            continue;
-        }
-        
+		if ([color.colorSpaceName isEqualToString:NSCalibratedRGBColorSpace]) {
+			printf("Color %s is NSCalibratedRGBColorSpace. Using, RGB values, but might not be what's expected.\n", [key UTF8String]);
+		}
+		else if (![color.colorSpaceName isEqualToString:NSDeviceRGBColorSpace]) {
+			printf("Color %s isn't device RGB. Skipping.\n", [key UTF8String]);
+			continue;
+		}
+		
         CGFloat r, g, b, a;
         [color getRed:&r green:&g blue:&b alpha:&a];
         
-        NSString *declaration = [NSString stringWithFormat:@"+ (UIColor *)%@Color;\n", [self methodNameForKey:key]];
+        NSString *declaration = [NSString stringWithFormat:@"+ (UIColor*) %@Color;\n", [self methodNameForKey:key]];
         [self.interfaceContents addObject:declaration];
         
         NSMutableString *method = [declaration mutableCopy];
-        [method appendFormat:@"{\n    return [UIColor colorWithRed:%.3ff green:%.3ff blue:%.3ff alpha:%.3ff];\n}\n", r, g, b, a];
+        [method appendFormat:@"{\n    return [UIColor colorWithRed: %.3ff green: %.3ff blue: %.3ff alpha: %.3ff];\n}\n", r, g, b, a];
         [self.implementationContents addObject:method];
     }
     
